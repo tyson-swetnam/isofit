@@ -17,15 +17,11 @@ from scipy.io import loadmat
 from spectral.io import envi
 
 from isofit import __version__
+from isofit.atmosphere.engines.modtran import ModtranRT
 from isofit.core import units
-from isofit.core.common import (
-    envi_header,
-    expand_path,
-    json_load_ascii,
-)
+from isofit.core.common import envi_header, expand_path, json_load_ascii
 from isofit.core.multistate import SurfaceMapping
 from isofit.data import env
-from isofit.atmosphere.engines.modtran import ModtranRT
 from isofit.utils.surface_model import surface_model
 
 
@@ -1466,7 +1462,7 @@ def make_atmosphere_config(
 
     lut_dir = lut_directory
     lut_path = (
-        join(lut_dir, "lut.nc")
+        join(lut_dir, "lut.zarr")
         if prebuilt_lut_path is None
         else abspath(prebuilt_lut_path)
     )
