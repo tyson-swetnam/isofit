@@ -453,6 +453,13 @@ def load(
     if mf:
         xropen = xr.mfopen_dataset
 
+    # Special case that doesn't require defining the entire grid subsetting strategy
+    if not subset and load:
+        Logger.debug(
+            "With no subset defined and load enabled, disabling default chunking for performance"
+        )
+        chunks = None
+
     ds = xropen(path, chunks=chunks, **kwargs)
 
     status = ds.attrs.get("ISOFIT status", "<not set>")
