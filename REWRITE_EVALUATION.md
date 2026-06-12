@@ -5,6 +5,15 @@
 Python. Based on a code-level review of ISOFIT 3.7.5 (~30k lines of Python,
 104 files).*
 
+> **Update (Phases 0–2 executed):** measured results now live in
+> [`perf/PROFILING.md`](perf/PROFILING.md). Highlights: per-pixel inversion is
+> 543 ms with ~85% inside scipy TRF/LSMM internals; the Phase 1 in-place
+> micro-optimizations below proved **noise-level** (kept for hygiene), while
+> the Phase 2 batched-torch solver (`perf/batched_inversion.py`) achieves
+> **2.7x per core on CPU (f64)** with equal-or-better ISOFIT cost on every
+> validated pixel, and is GPU-ready. This confirms the document's thesis:
+> the win is solver structure + batching, not a language rewrite.
+
 ---
 
 ## TL;DR

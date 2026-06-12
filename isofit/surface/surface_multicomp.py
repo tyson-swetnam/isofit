@@ -261,13 +261,19 @@ class MultiComponentSurface(Surface):
         """Partial derivative of Lambertian reflectance with respect to
         state vector, calculated at x_surface."""
 
-        dlamb = np.eye(self.n_wl, dtype=float)
-        nprefix = self.idx_lamb[0]
-        nsuffix = self.n_state - self.idx_lamb[-1] - 1
-        prefix = np.zeros((self.n_wl, nprefix))
-        suffix = np.zeros((self.n_wl, nsuffix))
+        # This matrix is constant; build it once and return copies so
+        # callers remain free to modify the result.
+        if not hasattr(self, "_dlamb_dsurface_const"):
+            dlamb = np.eye(self.n_wl, dtype=float)
+            nprefix = self.idx_lamb[0]
+            nsuffix = self.n_state - self.idx_lamb[-1] - 1
+            prefix = np.zeros((self.n_wl, nprefix))
+            suffix = np.zeros((self.n_wl, nsuffix))
+            self._dlamb_dsurface_const = np.concatenate(
+                (prefix, dlamb, suffix), axis=1
+            )
 
-        return np.concatenate((prefix, dlamb, suffix), axis=1)
+        return self._dlamb_dsurface_const.copy()
 
     def drdn_drfl(self, L_tot, s_alb, rho_dif_dir):
         """Partial derivative of radiance with respect to
@@ -284,13 +290,15 @@ class MultiComponentSurface(Surface):
         """Partial derivative of surface emission with respect to state vector,
         calculated at x_surface."""
 
-        dLs = np.zeros((self.n_wl, self.n_wl), dtype=float)
-        nprefix = self.idx_lamb[0]
-        nsuffix = len(self.statevec_names) - self.idx_lamb[-1] - 1
-        prefix = np.zeros((self.n_wl, nprefix))
-        suffix = np.zeros((self.n_wl, nsuffix))
+        # This matrix is constant (all zeros for a non-emissive surface);
+        # build it once and return copies so callers remain free to modify
+        # the result.
+        if not hasattr(self, "_dLs_dsurface_const"):
+            self._dLs_dsurface_const = np.zeros(
+                (self.n_wl, len(self.statevec_names)), dtype=float
+            )
 
-        return np.concatenate((prefix, dLs, suffix), axis=1)
+        return self._dLs_dsurface_const.copy()
 
     def drdn_dLs(self, t_total_up):
         """Partial derivative of radiance with respect to
