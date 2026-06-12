@@ -32,6 +32,19 @@ from isofit.radiative_transfer.engines import Engines
 Logger = logging.getLogger(__file__)
 
 
+def concat_rt_outputs(arrays):
+    """Concatenate per-engine RT output arrays across band ranges.
+
+    Equivalent to ``np.hstack(arrays)`` but avoids the hstack machinery in
+    the common single-engine case. A fresh 1-D array is always returned, so
+    callers may modify the result in place without corrupting any caches
+    held by the RT engines.
+    """
+    if len(arrays) == 1:
+        return np.atleast_1d(arrays[0]).copy()
+    return np.hstack(arrays)
+
+
 def confPriority(key, configs):
     """
     Selects a key from a config if the value for that key is not None
@@ -271,7 +284,7 @@ class RadiativeTransfer:
                     rho_atm = r["rhoatm"]
                     L_atm = units.transm_to_rdn(rho_atm, geom.coszen, self.solar_irr)
                 L_atms.append(L_atm)
-        return np.hstack(L_atms)
+        return concat_rt_outputs(L_atms)
 
     def get_L_coupled(self, r: dict, geom: Geometry, rho_dif_dif: np.ndarray = 0):
         """Get the interpolated radiance terms on the sun-to-surface-to-sensor path.
@@ -397,7 +410,7 @@ class RadiativeTransfer:
                             self.solar_irr,
                         )
                     L_tots.append(L_tot)
-            L_tot = np.hstack(L_tots)
+            L_tot = concat_rt_outputs(L_tots)
             L_dir_dir = 0
             L_dif_dir = 0
             L_dir_dif = 0
@@ -566,7 +579,7 @@ class RadiativeTransfer:
         rtm_quantities_concatenated_over_RT_bands = {}
         for key in shared_rtm_keys:
             temp = [x[key] for x in rtm_quantities_from_RT_engines]
-            rtm_quantities_concatenated_over_RT_bands[key] = np.hstack(temp)
+            rtm_quantities_concatenated_over_RT_bands[key] = concat_rt_outputs(temp)
 
         return rtm_quantities_concatenated_over_RT_bands
 

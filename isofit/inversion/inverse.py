@@ -202,10 +202,7 @@ class Inversion:
         inverse covariance and its square root."""
 
         Seps = self.fm.Seps(x, meas, geom)
-        wn = len(self.winidx)
-        Seps_win = np.zeros((wn, wn))
-        for i in range(wn):
-            Seps_win[i, :] = Seps[self.winidx[i], self.winidx]
+        Seps_win = Seps[np.ix_(self.winidx, self.winidx)]
         return svd_inv_sqrt(
             Seps_win, hashtable=self.hashtable, max_hash_size=self.max_table_size
         )
