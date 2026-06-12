@@ -4442,6 +4442,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#isofit.radiative_transfer.radiative_transfer.concat_rt_outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        concat_rt_outputs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#isofit.radiative_transfer.radiative_transfer.confPriority" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5245,7 +5256,20 @@
 <span class="normal">577</span>
 <span class="normal">578</span>
 <span class="normal">579</span>
-<span class="normal">580</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="ch">#! /usr/bin/env python3</span>
+<span class="normal">580</span>
+<span class="normal">581</span>
+<span class="normal">582</span>
+<span class="normal">583</span>
+<span class="normal">584</span>
+<span class="normal">585</span>
+<span class="normal">586</span>
+<span class="normal">587</span>
+<span class="normal">588</span>
+<span class="normal">589</span>
+<span class="normal">590</span>
+<span class="normal">591</span>
+<span class="normal">592</span>
+<span class="normal">593</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="ch">#! /usr/bin/env python3</span>
 <span class="c1">#</span>
 <span class="c1">#  Copyright 2018 California Institute of Technology</span>
 <span class="c1">#</span>
@@ -5277,6 +5301,19 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">isofit.radiative_transfer.engines</span><span class="w"> </span><span class="kn">import</span> <span class="n">Engines</span>
 
 <span class="n">Logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">concat_rt_outputs</span><span class="p">(</span><span class="n">arrays</span><span class="p">):</span><div class="mkapi-source-link" id="isofit.radiative_transfer.radiative_transfer.concat_rt_outputs"><a href="../../../../api/isofit/radiative_transfer/radiative_transfer/#isofit.radiative_transfer.radiative_transfer.concat_rt_outputs" title="Go to docs">[docs]</a></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Concatenate per-engine RT output arrays across band ranges.</span>
+
+<span class="sd">    Equivalent to ``np.hstack(arrays)`` but avoids the hstack machinery in</span>
+<span class="sd">    the common single-engine case. A fresh 1-D array is always returned, so</span>
+<span class="sd">    callers may modify the result in place without corrupting any caches</span>
+<span class="sd">    held by the RT engines.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arrays</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">arrays</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">arrays</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">confPriority</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span><div class="mkapi-source-link" id="isofit.radiative_transfer.radiative_transfer.confPriority"><a href="../../../../api/isofit/radiative_transfer/radiative_transfer/#isofit.radiative_transfer.radiative_transfer.confPriority" title="Go to docs">[docs]</a></div>
@@ -5518,7 +5555,7 @@
                     <span class="n">rho_atm</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;rhoatm&quot;</span><span class="p">]</span>
                     <span class="n">L_atm</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">transm_to_rdn</span><span class="p">(</span><span class="n">rho_atm</span><span class="p">,</span> <span class="n">geom</span><span class="o">.</span><span class="n">coszen</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">solar_irr</span><span class="p">)</span>
                 <span class="n">L_atms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">L_atm</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">L_atms</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">concat_rt_outputs</span><span class="p">(</span><span class="n">L_atms</span><span class="p">)</span>
 <div class="mkapi-source-link" id="isofit.radiative_transfer.radiative_transfer.RadiativeTransfer.get_L_coupled"><a href="../../../../api/isofit/radiative_transfer/radiative_transfer/#isofit.radiative_transfer.radiative_transfer.RadiativeTransfer.get_L_coupled" title="Go to docs">[docs]</a></div>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_L_coupled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">geom</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">rho_dif_dif</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the interpolated radiance terms on the sun-to-surface-to-sensor path.</span>
@@ -5644,7 +5681,7 @@
                             <span class="bp">self</span><span class="o">.</span><span class="n">solar_irr</span><span class="p">,</span>
                         <span class="p">)</span>
                     <span class="n">L_tots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">L_tot</span><span class="p">)</span>
-            <span class="n">L_tot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">L_tots</span><span class="p">)</span>
+            <span class="n">L_tot</span> <span class="o">=</span> <span class="n">concat_rt_outputs</span><span class="p">(</span><span class="n">L_tots</span><span class="p">)</span>
             <span class="n">L_dir_dir</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">L_dif_dir</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">L_dir_dif</span> <span class="o">=</span> <span class="mi">0</span>
@@ -5813,7 +5850,7 @@
         <span class="n">rtm_quantities_concatenated_over_RT_bands</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">shared_rtm_keys</span><span class="p">:</span>
             <span class="n">temp</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">rtm_quantities_from_RT_engines</span><span class="p">]</span>
-            <span class="n">rtm_quantities_concatenated_over_RT_bands</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+            <span class="n">rtm_quantities_concatenated_over_RT_bands</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">concat_rt_outputs</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">rtm_quantities_concatenated_over_RT_bands</span>
 

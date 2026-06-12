@@ -5023,10 +5023,7 @@
 <span class="normal">421</span>
 <span class="normal">422</span>
 <span class="normal">423</span>
-<span class="normal">424</span>
-<span class="normal">425</span>
-<span class="normal">426</span>
-<span class="normal">427</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="ch">#! /usr/bin/env python3</span>
+<span class="normal">424</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="ch">#! /usr/bin/env python3</span>
 <span class="c1">#</span>
 <span class="c1">#  Copyright 2018 California Institute of Technology</span>
 <span class="c1">#</span>
@@ -5230,10 +5227,7 @@
 <span class="sd">        inverse covariance and its square root.&quot;&quot;&quot;</span>
 
         <span class="n">Seps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fm</span><span class="o">.</span><span class="n">Seps</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">meas</span><span class="p">,</span> <span class="n">geom</span><span class="p">)</span>
-        <span class="n">wn</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">winidx</span><span class="p">)</span>
-        <span class="n">Seps_win</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">wn</span><span class="p">,</span> <span class="n">wn</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">wn</span><span class="p">):</span>
-            <span class="n">Seps_win</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">Seps</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">winidx</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">winidx</span><span class="p">]</span>
+        <span class="n">Seps_win</span> <span class="o">=</span> <span class="n">Seps</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">winidx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">winidx</span><span class="p">)]</span>
         <span class="k">return</span> <span class="n">svd_inv_sqrt</span><span class="p">(</span>
             <span class="n">Seps_win</span><span class="p">,</span> <span class="n">hashtable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hashtable</span><span class="p">,</span> <span class="n">max_hash_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_table_size</span>
         <span class="p">)</span>

@@ -3114,6 +3114,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#isofit.radiative_transfer.radiative_transfer.concat_rt_outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        concat_rt_outputs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#isofit.radiative_transfer.radiative_transfer.confPriority" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4688,6 +4699,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#isofit.radiative_transfer.radiative_transfer.concat_rt_outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        concat_rt_outputs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#isofit.radiative_transfer.radiative_transfer.confPriority" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5028,6 +5050,11 @@ and derivatives from each RTM and interval to form the complete result.</p>
 <div class="mkapi-section-content">
 <ul class="mkapi-item-list">
 <li>
+<p><span class="mkapi-item-name"><a href="./#isofit.radiative_transfer.radiative_transfer.concat_rt_outputs" title="isofit.radiative_transfer.radiative_transfer.concat_rt_outputs">concat_rt_outputs</a></span>
+ <span class="mkapi-dash">&mdash;</span>
+Concatenate per-engine RT output arrays across band ranges.</p>
+</li>
+<li>
 <p><span class="mkapi-item-name"><a href="./#isofit.radiative_transfer.radiative_transfer.confPriority" title="isofit.radiative_transfer.radiative_transfer.confPriority">confPriority</a></span>
  <span class="mkapi-dash">&mdash;</span>
 Selects a key from a config if the value for that key is not None
@@ -5043,6 +5070,24 @@ where 0.01159 is the surface Rayleigh scattering coefficient at 550 nm in km-1
 </li>
 </ul>
 </div>
+</div>
+<p class="mkapi-object mkapi-page-source" id="isofit.radiative_transfer.radiative_transfer.concat_rt_outputs">
+<span class="mkapi-object-link">
+
+
+<a href="../../../../src/isofit/radiative_transfer/radiative_transfer/#isofit.radiative_transfer.radiative_transfer.concat_rt_outputs" title="Go to source">source</a>
+<span class="mkapi-document-toggle" title="Toggle all docs">
+<i class="fa-regular fa-square-minus"></i>
+</span>
+</span>
+<span class="mkapi-object-name"><a href="./#isofit.radiative_transfer.radiative_transfer.concat_rt_outputs" title="isofit.radiative_transfer.radiative_transfer.concat_rt_outputs">concat_rt_outputs</a></span><span class="mkapi-signature"><span class="mkapi-paren">(</span><span class="mkapi-arg">arrays</span><span class="mkapi-paren">)</span></span>
+</p>
+<div class="mkapi-document">
+<p>Concatenate per-engine RT output arrays across band ranges.</p>
+<p>Equivalent to <code>np.hstack(arrays)</code> but avoids the hstack machinery in
+the common single-engine case. A fresh 1-D array is always returned, so
+callers may modify the result in place without corrupting any caches
+held by the RT engines.</p>
 </div>
 <p class="mkapi-object mkapi-page-source" id="isofit.radiative_transfer.radiative_transfer.confPriority">
 <span class="mkapi-object-link">

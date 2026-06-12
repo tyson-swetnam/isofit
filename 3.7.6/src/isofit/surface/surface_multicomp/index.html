@@ -5085,7 +5085,15 @@
 <span class="normal">384</span>
 <span class="normal">385</span>
 <span class="normal">386</span>
-<span class="normal">387</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="ch">#! /usr/bin/env python3</span>
+<span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span>
+<span class="normal">390</span>
+<span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="ch">#! /usr/bin/env python3</span>
 <span class="c1">#</span>
 <span class="c1">#  Copyright 2018 California Institute of Technology</span>
 <span class="c1">#</span>
@@ -5348,13 +5356,19 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Partial derivative of Lambertian reflectance with respect to</span>
 <span class="sd">        state vector, calculated at x_surface.&quot;&quot;&quot;</span>
 
-        <span class="n">dlamb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_wl</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-        <span class="n">nprefix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx_lamb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">nsuffix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_state</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx_lamb</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="n">prefix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_wl</span><span class="p">,</span> <span class="n">nprefix</span><span class="p">))</span>
-        <span class="n">suffix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_wl</span><span class="p">,</span> <span class="n">nsuffix</span><span class="p">))</span>
+        <span class="c1"># This matrix is constant; build it once and return copies so</span>
+        <span class="c1"># callers remain free to modify the result.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_dlamb_dsurface_const&quot;</span><span class="p">):</span>
+            <span class="n">dlamb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_wl</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+            <span class="n">nprefix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx_lamb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">nsuffix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_state</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx_lamb</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_wl</span><span class="p">,</span> <span class="n">nprefix</span><span class="p">))</span>
+            <span class="n">suffix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_wl</span><span class="p">,</span> <span class="n">nsuffix</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dlamb_dsurface_const</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">dlamb</span><span class="p">,</span> <span class="n">suffix</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+            <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">prefix</span><span class="p">,</span> <span class="n">dlamb</span><span class="p">,</span> <span class="n">suffix</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dlamb_dsurface_const</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">drdn_drfl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">L_tot</span><span class="p">,</span> <span class="n">s_alb</span><span class="p">,</span> <span class="n">rho_dif_dir</span><span class="p">):</span><div class="mkapi-source-link" id="isofit.surface.surface_multicomp.MultiComponentSurface.drdn_drfl"><a href="../../../../api/isofit/surface/surface_multicomp/#isofit.surface.surface_multicomp.MultiComponentSurface.drdn_drfl" title="Go to docs">[docs]</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Partial derivative of radiance with respect to</span>
@@ -5371,13 +5385,15 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Partial derivative of surface emission with respect to state vector,</span>
 <span class="sd">        calculated at x_surface.&quot;&quot;&quot;</span>
 
-        <span class="n">dLs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_wl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_wl</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-        <span class="n">nprefix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx_lamb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">nsuffix</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statevec_names</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx_lamb</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="n">prefix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_wl</span><span class="p">,</span> <span class="n">nprefix</span><span class="p">))</span>
-        <span class="n">suffix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_wl</span><span class="p">,</span> <span class="n">nsuffix</span><span class="p">))</span>
+        <span class="c1"># This matrix is constant (all zeros for a non-emissive surface);</span>
+        <span class="c1"># build it once and return copies so callers remain free to modify</span>
+        <span class="c1"># the result.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_dLs_dsurface_const&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dLs_dsurface_const</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_wl</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statevec_names</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
+            <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">prefix</span><span class="p">,</span> <span class="n">dLs</span><span class="p">,</span> <span class="n">suffix</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dLs_dsurface_const</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">drdn_dLs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t_total_up</span><span class="p">):</span><div class="mkapi-source-link" id="isofit.surface.surface_multicomp.MultiComponentSurface.drdn_dLs"><a href="../../../../api/isofit/surface/surface_multicomp/#isofit.surface.surface_multicomp.MultiComponentSurface.drdn_dLs" title="Go to docs">[docs]</a></div>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Partial derivative of radiance with respect to</span>
